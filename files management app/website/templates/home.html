@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<style>
+  .flex-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .left-container {
+    width: 20%;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+  }
+
+  .right-container {
+    width: 80%;
+    min-height: 100px ;
+    background-color: #ffffff;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+  }
+
+  td {
+      font-family: Arial, sans-serif;
+  }
+
+  td {
+      font-family: Arial, sans-serif;
+  }
+
+  td.numeric {
+      font-weight: bold;
+      color: #333;
+  }
+
+  .highlight-numbers td {
+      vertical-align: middle;
+      font-weight: bold;
+      color: #333;
+  }
+
+  @media (max-width: 768px) {
+    .flex-wrapper {
+      flex-direction: column;
+    }
+
+    .left-container, .right-container {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">Hello, {{ user.first_name }}</h1>
+
+    <div class="flex-wrapper">
+        <!-- Left Container (20%) -->
+        <div class="left-container">
+            <form method="POST" action="{{ url_for('views.home') }}">
+                <div class="mb-3">
+                    <label for="expedition" class="form-label">Search Expedition</label>
+                    <input type="text" id="expedition" name="expedition" class="form-control" placeholder="Enter expedition name">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </form>
+            <div class="mt-4">
+              <h6>Available expeditions:</h6>
+              <div style="max-height: 200px; overflow-y: auto;">
+                <ul class="list-group">
+                  {% for t in all_tables %}
+                    <li class="list-group-item py-1 px-2">{{ t }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+        </div>
+
+        <!-- Right Container (80%) -->
+        <div class="right-container">
+            {% if df_html %}
+                <h3>{{ table_name }}</h3>
+                <div class="table-responsive bold-numbers">
+                    {{ df_html | safe }}
+                </div>
+            {% elif table is not none and not table %}
+                <div class="alert alert-warning mt-4">
+                    Expedition table not found.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

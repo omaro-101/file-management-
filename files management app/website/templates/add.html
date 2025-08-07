@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Excel Files{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Upload Two Excel Files</h2>
+    <form method="POST" action="{{ url_for('views.upload_excel') }}" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Left Drop Zone -->
+            <div class="col-md-6 mb-4">
+                <div class="drop-zone border border-primary p-4 text-center" id="dropZone1">
+                    <p>Drop received expedition here. </p>
+                    <input type="file" name="file1" id="fileInput1" accept=".xlsx,.xls" hidden>
+                </div>
+            </div>
+
+            <!-- Right Drop Zone -->
+            <div class="col-md-6 mb-4">
+                <div class="drop-zone border border-success p-4 text-center" id="dropZone2">
+                    <p>Drop company expedition here. </p>
+                    <input type="file" name="file2" id="fileInput2" accept=".xlsx,.xls" hidden>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary ">Upload Files</button>
+    </form>
+</div>
+
+<style>
+.drop-zone {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    cursor: pointer;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.drop-zone.dragover {
+    background-color: #e0f7fa;
+    border: 2px dashed #007bff;
+}
+</style>
+
+<script>
+    function setupDropZone(dropZoneId, fileInputId) {
+        const dropZone = document.getElementById(dropZoneId);
+        const fileInput = document.getElementById(fileInputId);
+        const label = dropZone.querySelector('p');
+
+        // When clicking the drop zone
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // When dragging over
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        // When leaving drop zone
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        // When dropping file
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                fileInput.files = e.dataTransfer.files;
+                label.textContent = file.name;
+            }
+        });
+
+        // When file selected via click
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                label.textContent = file.name;
+            }
+        });
+    }
+
+    setupDropZone('dropZone1', 'fileInput1');
+    setupDropZone('dropZone2', 'fileInput2');
+</script>
+
+{% endblock %}
